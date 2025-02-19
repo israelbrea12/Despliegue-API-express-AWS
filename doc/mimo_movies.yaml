@@ -1,0 +1,379 @@
+openapi: 3.0.0
+info:
+  title: MIMO movies
+  description: API para gestionar películas, valoraciones y watchlist de usuarios.
+  version: 1.0.0
+paths:
+  /movies: ✅
+    get: ✅
+      summary: Obtiene la lista de películas
+      operationId: getMovies
+      responses:
+        "200":
+          description: Lista de películas
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Movie"
+
+  /movies/{movieId}/ratings: ✅
+    get: ✅
+      summary: Obtiene las valoraciones de una película
+      operationId: getMovieRatings
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la película
+      responses:
+        "200":
+          description: Lista de valoraciones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    userId:
+                      type: integer
+                    rating:
+                      type: number
+                      format: float
+                    comment:
+                      type: string
+
+    post: ✅
+      summary: Crea una valoración para una película
+      operationId: createMovieRating
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la película
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RatingInput"
+      responses:
+        "201":
+          description: Valoración creada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Rating"
+        "422":
+          description: Datos de valoración inválidos
+        "401":
+          description: No autorizado
+
+  /movies/{movieId}/ratings/{ratingId}: ✅
+    get: ✅
+      summary: Obtiene una valoración específica de una película
+      operationId: getMovieRating
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la película
+        - name: ratingId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la valoración
+      responses:
+        "200":
+          description: Detalles de la valoración
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  userId:
+                    type: integer
+                  rating:
+                    type: number
+                    format: float
+                  comment:
+                    type: string
+
+    patch: ✅
+      summary: Modifica una valoración de una película
+      operationId: updateMovieRating
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la película
+        - name: ratingId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la valoración
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RatingInput"
+      responses:
+        "200":
+          description: Valoración modificada
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Rating"
+        "422":
+          description: Datos de valoración inválidos
+        "401":
+          description: No autorizado
+
+    delete: ✅
+      summary: Elimina una valoración de una película
+      operationId: deleteMovieRating
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: movieId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la película
+        - name: ratingId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID de la valoración
+      responses:
+        "204":
+          description: Valoración eliminada
+        "401":
+          description: No autorizado
+
+  /watchlist/{userId}: ✅
+    get: ✅
+      summary: Obtiene el watchlist de un usuario
+      operationId: getUserWatchlist
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del usuario
+      responses:
+        "200":
+          description: Lista de películas en el watchlist del usuario
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    movieId:
+                      type: integer
+                    title:
+                      type: string
+                    watched:
+                      type: boolean
+
+  /watchlist/{userId}/items: ✅
+    post: ✅
+      summary: Añadir una película al watchlist de un usuario
+      operationId: addToWatchlist
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WatchlistItemInput"
+      responses:
+        "201":
+          description: Película añadida al watchlist
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WatchlistItem"
+        "422":
+          description: ID de película inválido
+        "404":
+          description: Película no encontrada
+        "409":
+          description: La película ya existe en el watchlist
+
+  /watchlist/{userId}/items/{itemId}: ✅
+    delete: ✅
+      summary: Elimina una película del watchlist de un usuario
+      operationId: removeFromWatchlist
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del usuario
+        - name: itemId
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: ID del item en el watchlist
+      responses:
+        "204":
+          description: Película eliminada del watchlist
+
+  /sessions: ✅
+    post: ✅
+      summary: Iniciar sesión de usuario
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Credentials"
+      responses:
+        "200":
+          description: Login exitoso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Session"
+        "401":
+          description: Credenciales inválidas
+
+components:
+  schemas:
+    Movie:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        genre:
+          type: string
+        duration:
+          type: integer
+        rating:
+          type: number
+          format: float
+
+    WatchlistItemInput:
+      type: object
+      required:
+        - movieId
+      properties:
+        movieId:
+          type: integer
+          minimum: 1
+          description: ID válido de una película existente
+        watched:
+          type: boolean
+          default: false
+          description: Indica si la película ya ha sido vista
+
+    WatchlistItem:
+      type: object
+      properties:
+        movieId:
+          type: integer
+          minimum: 1
+        title:
+          type: string
+        watched:
+          type: boolean
+
+    Credentials:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          format: password
+
+    Session:
+      type: object
+      properties:
+        token:
+          type: string
+
+    RatingInput:
+      type: object
+      properties:
+        rating:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 5
+          description: Valoración entre 0 y 5 estrellas
+        comment:
+          type: string
+          maxLength: 500
+          description: Comentario opcional sobre la película
+
+    Rating:
+      type: object
+      properties:
+        id:
+          type: integer
+        movieId:
+          type: integer
+        userId:
+          type: integer
+        rating:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 5
+        comment:
+          type: string
+          maxLength: 500
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -1,0 +1,34 @@
+{
+  "name": "evaluacion-mimo-movies",
+  "version": "1.0.0",
+  "description": "Creacion de la API MIMO Movies con express.js y docker",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/israelbrea12/MIMO-Movies-API.git"
+  },
+  "author": "Israel Brea Piñero",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/israelbrea12/MIMO-Movies-API/issues"
+  },
+  "homepage": "https://github.com/israelbrea12/MIMO-Movies-API#readme",
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
+    "mysql2": "^3.12.0",
+    "sequelize": "^6.37.5",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
+  }
+}
