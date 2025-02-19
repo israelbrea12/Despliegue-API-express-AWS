@@ -1,0 +1,12 @@
+[Unit]
+Description="Express App"
+
+[Service]
+WorkingDirectory=/home/ubuntu/express
+ExecStart=/home/ubuntu/app-express PORT=80 SECRET_KEY="9gx9[jnPE>zTDmzAC^p<ETbLBsnljKEqhT1CSDDDYubCw?4^agPJX:2Rz1k2?h<AaUB" node index.js
+ExecStop=/bin/kill -TERM $MAINPID
+Type=simple
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
